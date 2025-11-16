@@ -3,11 +3,12 @@
 
 GCOBOL := x86_64-linux-musl-gcobol
 GCC := x86_64-linux-musl-gcc
+STRIP := x86_64-linux-musl-strip
 COBOLFLAGS := -static-libgcc -static-libstdc++ -Wl,-static
 CFLAGS := -static
 
 # Test source files (in order)
-TESTS := 01-hello 02-arithmetic 03-strings 04-loops 05-fileio 06-conditionals 07-mixed
+TESTS := 01-hello 02-arithmetic 03-strings 04-loops 05-fileio 06-conditionals 07-mixed 08-json
 
 # Derived names
 TEST_SOURCES := $(addsuffix .cob,$(TESTS))
@@ -39,11 +40,24 @@ build: $(TEST_BINARIES)
 	@$(GCC) $(CFLAGS) -c fileio_c.c -o fileio_c.o
 	@echo "Compiling mixed COBOL/C program..."
 	@$(GCOBOL) $(COBOLFLAGS) -o $@ 07-mixed.cob fileio_c.o
+	@echo "Stripping $@..."
+	@$(STRIP) $@
+
+# Special rule for JSON parser example
+08-json: 08-json.cob json_parser.c
+	@echo "Compiling JSON parser: json_parser.c..."
+	@$(GCC) $(CFLAGS) -c json_parser.c -o json_parser.o
+	@echo "Compiling JSON/COBOL program..."
+	@$(GCOBOL) $(COBOLFLAGS) -o $@ 08-json.cob json_parser.o
+	@echo "Stripping $@..."
+	@$(STRIP) $@
 
 # Generic rule to compile COBOL programs
 %: %.cob
 	@echo "Compiling $<..."
 	@$(GCOBOL) $(COBOLFLAGS) -o $@ $<
+	@echo "Stripping $@..."
+	@$(STRIP) $@
 
 # Run all tests
 test: build
@@ -73,7 +87,7 @@ test: build
 clean:
 	@echo "Cleaning test directory..."
 	rm -f $(TEST_BINARIES)
-	rm -f test-data.txt test-output.txt sales-data.txt processed.txt
+	rm -f test-data.txt test-output.txt sales-data.txt processed.txt customers.json
 	rm -f *.o
 	@echo "Clean complete"
 
