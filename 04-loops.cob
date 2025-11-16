@@ -1,0 +1,22 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TEST-LOOPS.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 COUNTER    PIC 99 VALUE 1.
+       01 SUM-TOTAL  PIC 999 VALUE 0.
+
+       PROCEDURE DIVISION.
+           DISPLAY "Counting 1 to 5:".
+           PERFORM VARYING COUNTER FROM 1 BY 1
+               UNTIL COUNTER > 5
+               DISPLAY "  " COUNTER
+           END-PERFORM.
+
+           PERFORM VARYING COUNTER FROM 1 BY 1
+               UNTIL COUNTER > 10
+               ADD COUNTER TO SUM-TOTAL
+           END-PERFORM.
+           DISPLAY "Sum 1-10: " SUM-TOTAL.
+
+           STOP RUN.

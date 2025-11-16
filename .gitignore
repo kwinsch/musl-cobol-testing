@@ -1,0 +1,20 @@
+# Compiled binaries
+01-hello
+02-arithmetic
+03-strings
+04-loops
+05-fileio
+06-conditionals
+
+# Test output files
+test-data.txt
+test-output.txt
+*.txt
+
+# Object files
+*.o
+
+# Editor files
+*~
+.*.swp
+.DS_Store

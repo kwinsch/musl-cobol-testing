@@ -1,0 +1,6 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TEST-HELLO.
+
+       PROCEDURE DIVISION.
+           DISPLAY "Hello from COBOL!".
+           STOP RUN.
