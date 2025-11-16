@@ -2,10 +2,12 @@
 # Requires x86_64-linux-musl-gcobol in PATH
 
 GCOBOL := x86_64-linux-musl-gcobol
+GCC := x86_64-linux-musl-gcc
 COBOLFLAGS := -static-libgcc -static-libstdc++ -Wl,-static
+CFLAGS := -static
 
 # Test source files (in order)
-TESTS := 01-hello 02-arithmetic 03-strings 04-loops 05-fileio 06-conditionals
+TESTS := 01-hello 02-arithmetic 03-strings 04-loops 05-fileio 06-conditionals 07-mixed
 
 # Derived names
 TEST_SOURCES := $(addsuffix .cob,$(TESTS))
@@ -30,6 +32,13 @@ check-compiler:
 
 # Compile all tests
 build: $(TEST_BINARIES)
+
+# Special rule for mixed C/COBOL program
+07-mixed: 07-mixed.cob fileio_c.c
+	@echo "Compiling C helper: fileio_c.c..."
+	@$(GCC) $(CFLAGS) -c fileio_c.c -o fileio_c.o
+	@echo "Compiling mixed COBOL/C program..."
+	@$(GCOBOL) $(COBOLFLAGS) -o $@ 07-mixed.cob fileio_c.o
 
 # Generic rule to compile COBOL programs
 %: %.cob
@@ -64,7 +73,7 @@ test: build
 clean:
 	@echo "Cleaning test directory..."
 	rm -f $(TEST_BINARIES)
-	rm -f test-data.txt test-output.txt
+	rm -f test-data.txt test-output.txt sales-data.txt processed.txt
 	rm -f *.o
 	@echo "Clean complete"
 
